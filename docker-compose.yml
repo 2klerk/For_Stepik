@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app/php:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+  
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appDB
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./app/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
